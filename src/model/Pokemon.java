@@ -227,6 +227,30 @@ public class Pokemon {
         this.spriteReference = spriteReference;
     }
 
+    /**
+     * Returns a user-friendly formatted string of the Pokémon's typing
+     * (e.g. "Psychic / Fairy" or "Water").
+     */
+    public String getFormattedType() {
+        return hasSecondType() ? (type1 + " / " + type2) : type1;
+    }
+
+    /**
+     * Returns the current HP percentage as a ratio between 0.0 and 1.0
+     * (convenient for UI health bars).
+     */
+    public double getHPPercent() {
+        if (maxHP <= 0) return 0.0;
+        return (double) currentHP / maxHP;
+    }
+
+    /**
+     * Checks if the Pokémon is at maximum health.
+     */
+    public boolean isFullHP() {
+        return currentHP == maxHP;
+    }
+
     @Override
     public String toString() {
         String typeStr = hasSecondType() ? (type1 + "/" + type2) : type1;

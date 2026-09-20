@@ -4,10 +4,13 @@ import model.Move;
 import model.Pokemon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 /**
  * Single official database storing all 15 Pokémon in the project
@@ -233,6 +236,38 @@ public class PokemonDatabase {
     public static boolean hasPokemon(String name) {
         if (name == null) return false;
         return TEMPLATES.containsKey(name.trim().toLowerCase());
+    }
+
+    // The 6 Pokémon permitted for player selection
+    private static final List<String> PLAYER_POKEMON_NAMES = Collections.unmodifiableList(
+            Arrays.asList("Gardevoir", "Charizard", "Lucario", "Gengar", "Dragonite", "Milotic")
+    );
+
+    /**
+     * Returns an unmodifiable list of the names of the 6 Pokémon available for player selection.
+     */
+    public static List<String> getPlayerPokemonNames() {
+        return PLAYER_POKEMON_NAMES;
+    }
+
+    /**
+     * Checks if a Pokémon name belongs to the 6 allowed player Pokémon (case-insensitive).
+     */
+    public static boolean isPlayerPokemon(String name) {
+        if (name == null) return false;
+        for (String pName : PLAYER_POKEMON_NAMES) {
+            if (pName.equalsIgnoreCase(name.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a Pokémon instance belongs to the 6 allowed player Pokémon.
+     */
+    public static boolean isPlayerPokemon(Pokemon pokemon) {
+        return pokemon != null && isPlayerPokemon(pokemon.getName());
     }
 
     /**
