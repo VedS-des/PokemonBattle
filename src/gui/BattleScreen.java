@@ -7,6 +7,9 @@ import main.GameState;
 public class BattleScreen extends JFrame {
 
     private JLabel messageLabel;
+    private JProgressBar playerHPBar;
+    private JProgressBar enemyHPBar;
+    private JPanel partyPanel;
 
     public BattleScreen() {
 
@@ -23,8 +26,35 @@ public class BattleScreen extends JFrame {
         // BATTLE AREA
         // =========================
 
-        JPanel battleArea = new JPanel(null);
-        battleArea.setBackground(new Color(80, 140, 150));
+        ImageIcon backgroundIcon =
+                new ImageIcon(
+                        "assets/backgrounds/BattleBackground.png"
+                );
+
+        Image backgroundImage =
+                backgroundIcon.getImage().getScaledInstance(
+                        1000,
+                        500,
+                        Image.SCALE_SMOOTH
+                );
+
+        JPanel battleArea = new JPanel(null) {
+
+            @Override
+            protected void paintComponent(Graphics g) {
+
+                super.paintComponent(g);
+
+                g.drawImage(
+                        backgroundImage,
+                        0,
+                        0,
+                        getWidth(),
+                        getHeight(),
+                        this
+                );
+            }
+        };
 
         // =========================
         // ENEMY INFORMATION
@@ -32,7 +62,7 @@ public class BattleScreen extends JFrame {
 
         JPanel enemyInfo = createInfoBox(
                 getOpponentPokemon(),
-                "HP  ██████████"
+                "HP  100 / 100"
         );
 
         enemyInfo.setBounds(620, 50, 300, 100);
@@ -46,7 +76,7 @@ public class BattleScreen extends JFrame {
 
         JPanel playerInfo = createInfoBox(
                 playerName,
-                "HP  ██████████"
+                "HP  100 / 100"
         );
 
         playerInfo.setBounds(80, 360, 300, 100);
@@ -77,6 +107,31 @@ public class BattleScreen extends JFrame {
                 playerName + "_back.png"
         );
 
+        // =========================
+// PLAYER TRAINER SPRITE
+// =========================
+
+        String playerTrainerFile;
+
+        if (GameState.playerTrainer.equals("Boy")) {
+            playerTrainerFile = "Boy_back.png";
+        } else {
+            playerTrainerFile = "Girl_back.png";
+        }
+
+        JLabel playerTrainer = createTrainerSpriteLabel(
+                playerTrainerFile
+        );
+
+        playerTrainer.setBounds(
+                40,
+                250,
+                120,
+                180
+        );
+
+        battleArea.add(playerTrainer);
+
         playerPokemon.setBounds(
                 120,
                 230,
@@ -89,6 +144,43 @@ public class BattleScreen extends JFrame {
         mainPanel.add(
                 battleArea,
                 BorderLayout.CENTER
+        );
+        partyPanel = new JPanel(
+                new GridLayout(3, 1, 5, 5)
+        );
+
+        partyPanel.setBackground(
+                new Color(25, 30, 45)
+        );
+
+        partyPanel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Color.WHITE),
+                        "YOUR PARTY"
+                )
+        );
+
+        for (String pokemon : GameState.playerPokemon) {
+
+            String symbol = pokemon.equals(
+                    GameState.playerPokemon[0]
+            ) ? "> " : "  ";
+
+            JLabel pokemonLabel = new JLabel(
+                    symbol + pokemon
+            );
+
+            pokemonLabel.setForeground(Color.WHITE);
+            pokemonLabel.setFont(
+                    new Font("Arial", Font.BOLD, 16)
+            );
+
+            partyPanel.add(pokemonLabel);
+        }
+
+        mainPanel.add(
+                partyPanel,
+                BorderLayout.EAST
         );
 
         // =========================
@@ -137,12 +229,72 @@ public class BattleScreen extends JFrame {
                 new Color(25, 30, 45)
         );
 
-        String[] moves = {
-                "MOVE 1",
-                "MOVE 2",
-                "MOVE 3",
-                "MOVE 4"
-        };
+        String[] moves;
+
+        switch (playerName) {
+
+            case "Gardevoir":
+                moves = new String[]{
+                        "Psychic",
+                        "Moonblast",
+                        "Shadow Ball",
+                        "Energy Ball"
+                };
+                break;
+
+            case "Charizard":
+                moves = new String[]{
+                        "Flamethrower",
+                        "Air Slash",
+                        "Dragon Claw",
+                        "Thunder Punch"
+                };
+                break;
+
+            case "Lucario":
+                moves = new String[]{
+                        "Aura Sphere",
+                        "Flash Cannon",
+                        "Shadow Claw",
+                        "Extreme Speed"
+                };
+                break;
+
+            case "Gengar":
+                moves = new String[]{
+                        "Shadow Ball",
+                        "Sludge Bomb",
+                        "Dark Pulse",
+                        "Thunderbolt"
+                };
+                break;
+
+            case "Dragonite":
+                moves = new String[]{
+                        "Dragon Claw",
+                        "Dragon Rush",
+                        "Aerial Ace",
+                        "Thunder Punch"
+                };
+                break;
+
+            case "Milotic":
+                moves = new String[]{
+                        "Surf",
+                        "Ice Beam",
+                        "Aqua Tail",
+                        "Mirror Coat"
+                };
+                break;
+
+            default:
+                moves = new String[]{
+                        "Move 1",
+                        "Move 2",
+                        "Move 3",
+                        "Move 4"
+                };
+        }
 
         for (String move : moves) {
 
@@ -161,6 +313,49 @@ public class BattleScreen extends JFrame {
                                 + " used "
                                 + move + "!"
                 );
+
+                int currentEnemyHP = enemyHPBar.getValue();
+
+                int newHP = Math.max(
+                        0,
+                        currentEnemyHP - 25
+                );
+
+                enemyHPBar.setValue(newHP);
+                enemyHPBar.setString(
+                        "HP " + newHP + " / 100"
+                );
+                if (newHP <= 25) {
+                    enemyHPBar.setForeground(Color.RED);
+                } else if (newHP <= 50) {
+                    enemyHPBar.setForeground(Color.YELLOW);
+                } else {
+                    enemyHPBar.setForeground(new Color(60, 180, 75));
+                }
+                if (newHP > 0) {
+
+                    int currentPlayerHP = playerHPBar.getValue();
+
+                    int newPlayerHP = Math.max(
+                            0,
+                            currentPlayerHP - 15
+                    );
+
+                    playerHPBar.setValue(newPlayerHP);
+                    playerHPBar.setString(
+                            "HP " + newPlayerHP + " / 100"
+                    );
+
+                    if (newPlayerHP <= 25) {
+                        playerHPBar.setForeground(Color.RED);
+                    } else if (newPlayerHP <= 50) {
+                        playerHPBar.setForeground(Color.YELLOW);
+                    } else {
+                        playerHPBar.setForeground(
+                                new Color(60, 180, 75)
+                        );
+                    }
+                }
             });
 
             movePanel.add(moveButton);
@@ -206,6 +401,27 @@ public class BattleScreen extends JFrame {
 
         return label;
     }
+    private JLabel createTrainerSpriteLabel(String fileName) {
+
+        JLabel label = new JLabel();
+
+        ImageIcon icon = new ImageIcon(
+                "assets/trainers/" + fileName
+        );
+
+        Image image = icon.getImage()
+                .getScaledInstance(
+                        120,
+                        180,
+                        Image.SCALE_SMOOTH
+                );
+
+        label.setIcon(
+                new ImageIcon(image)
+        );
+
+        return label;
+    }
 
     // =========================
     // CREATE INFO BOX
@@ -217,7 +433,7 @@ public class BattleScreen extends JFrame {
     ) {
 
         JPanel panel = new JPanel(
-                new GridLayout(2, 1)
+                new GridLayout(3, 1)
         );
 
         panel.setBackground(
@@ -232,7 +448,7 @@ public class BattleScreen extends JFrame {
         );
 
         JLabel name = new JLabel(
-                pokemonName
+                pokemonName + "  Lv. 50"
         );
 
         name.setFont(
@@ -241,22 +457,57 @@ public class BattleScreen extends JFrame {
 
         name.setBorder(
                 BorderFactory.createEmptyBorder(
-                        5, 10, 0, 10
+                        3, 10, 0, 10
                 )
         );
 
-        JLabel hpLabel = new JLabel(
+        JLabel hpText = new JLabel(
                 hp
         );
 
-        hpLabel.setBorder(
+        hpText.setFont(
+                new Font("Arial", Font.PLAIN, 14)
+        );
+
+        hpText.setBorder(
                 BorderFactory.createEmptyBorder(
-                        0, 10, 5, 10
+                        0, 10, 0, 10
+                )
+        );
+
+        JProgressBar hpBar = new JProgressBar(
+                0,
+                100
+        );
+
+        if (pokemonName.equals(GameState.playerPokemon[0])) {
+            playerHPBar = hpBar;
+        } else {
+            enemyHPBar = hpBar;
+        }
+
+        hpBar.setValue(100);
+        hpBar.setStringPainted(true);
+        hpBar.setString("HP 100 / 100");
+
+        hpBar.setForeground(
+                new Color(60, 180, 75)
+        );
+
+        hpBar.setBackground(
+                new Color(80, 80, 80)
+        );
+
+        hpBar.setBorder(
+                BorderFactory.createLineBorder(
+                        Color.BLACK,
+                        1
                 )
         );
 
         panel.add(name);
-        panel.add(hpLabel);
+        panel.add(hpText);
+        panel.add(hpBar);
 
         return panel;
     }

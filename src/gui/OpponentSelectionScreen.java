@@ -30,19 +30,22 @@ public class OpponentSelectionScreen extends JFrame {
         background.add(title, BorderLayout.NORTH);
 
         // Opponent buttons
-        JButton redButton = createOpponentButton(
+        JButton redButton = createOpponentImageButton(
                 "RED",
-                "EASY"
+                "EASY",
+                "assets/trainers/VSRed.png"
         );
 
-        JButton stevenButton = createOpponentButton(
+        JButton stevenButton = createOpponentImageButton(
                 "STEVEN",
-                "MEDIUM"
+                "MEDIUM",
+                "assets/trainers/VSSteven.png"
         );
 
-        JButton cynthiaButton = createOpponentButton(
+        JButton cynthiaButton = createOpponentImageButton(
                 "CYNTHIA",
-                "HARD"
+                "HARD",
+                "assets/trainers/VSCynthia.png"
         );
 
         // Red
@@ -113,27 +116,57 @@ public class OpponentSelectionScreen extends JFrame {
         setVisible(true);
     }
 
-    private JButton createOpponentButton(
+    private JButton createOpponentImageButton(
             String name,
-            String difficulty
+            String difficulty,
+            String fileName
     ) {
 
-        JButton button = new JButton(
+        JButton button = new JButton();
+
+        ImageIcon icon = new ImageIcon(fileName);
+
+        Image originalImage = icon.getImage();
+
+        int originalWidth = icon.getIconWidth();
+        int originalHeight = icon.getIconHeight();
+
+        double scale = Math.min(
+                200.0 / originalWidth,
+                300.0 / originalHeight
+        );
+
+        int newWidth = (int) (originalWidth * scale);
+        int newHeight = (int) (originalHeight * scale);
+
+        Image image = originalImage.getScaledInstance(
+                newWidth,
+                newHeight,
+                Image.SCALE_SMOOTH
+        );
+
+        button.setIcon(
+                new ImageIcon(image)
+        );
+
+        button.setText(
                 "<html><center>"
-                        + name
-                        + "<br><br>"
+                        + "<b>" + name + "</b>"
+                        + "<br>"
                         + difficulty
                         + "</center></html>"
         );
 
-        button.setFont(
-                new Font("Arial", Font.BOLD, 24)
+        button.setHorizontalTextPosition(
+                SwingConstants.CENTER
         );
 
-        button.setForeground(Color.WHITE);
+        button.setVerticalTextPosition(
+                SwingConstants.BOTTOM
+        );
 
-        button.setBackground(
-                new Color(45, 55, 85)
+        button.setFont(
+                new Font("Arial", Font.BOLD, 16)
         );
 
         button.setFocusPainted(false);
@@ -143,6 +176,10 @@ public class OpponentSelectionScreen extends JFrame {
                         new Color(120, 130, 160),
                         2
                 )
+        );
+
+        button.setBackground(
+                new Color(45, 55, 85)
         );
 
         return button;
