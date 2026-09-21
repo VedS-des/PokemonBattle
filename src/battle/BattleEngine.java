@@ -1,5 +1,6 @@
 package battle;
 
+import model.Move;
 import model.Pokemon;
 import model.Trainer;
 
@@ -15,16 +16,21 @@ public class BattleEngine {
         return state;
     }
 
-    public void executeTurn() {
+    public void executeTurn(Move playerMove) {
 
         if (state.getPlayer().isDefeated()
                 || state.getEnemy().isDefeated()) {
             return;
         }
 
+        if (playerMove == null) {
+            return;
+        }
+
         BattleTurn.executeTurn(
                 state.getPlayerPokemon(),
-                state.getEnemyPokemon()
+                state.getEnemyPokemon(),
+                playerMove
         );
 
         updateActivePokemon();

@@ -1,6 +1,7 @@
 package battle;
 
 import data.TrainerDatabase;
+import model.Move;
 import model.Pokemon;
 import model.Trainer;
 
@@ -35,9 +36,13 @@ public class BattleEngineTest {
             Pokemon playerBefore = engine.getState().getPlayerPokemon();
             Pokemon enemyBefore = engine.getState().getEnemyPokemon();
 
-            System.out.println("----- Turn " + turn + " -----");
+            Move playerMove = playerBefore.getMove(0);
 
-            engine.executeTurn();
+            System.out.println("----- Turn " + turn + " -----");
+            System.out.println("Player selected move: "
+                    + playerMove.getName());
+
+            engine.executeTurn(playerMove);
 
             Pokemon playerAfter = engine.getState().getPlayerPokemon();
             Pokemon enemyAfter = engine.getState().getEnemyPokemon();
