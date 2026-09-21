@@ -9,6 +9,7 @@ import main.GameState;
 public class PokemonSelectionScreen extends JFrame {
 
     private final List<String> selectedPokemon = new ArrayList<>();
+    private JLabel selectedLabel;
 
     private final String[] pokemon = {
             "Gardevoir",
@@ -39,93 +40,55 @@ public class PokemonSelectionScreen extends JFrame {
         JPanel background = new JPanel(new BorderLayout());
         background.setBackground(new Color(20, 25, 45));
 
-        // Title
-        JLabel title = new JLabel(
+        // =========================
+        // TITLE
+        // =========================
+
+        JLabel headingLabel = new JLabel(
                 "CHOOSE 3 POKEMON",
                 SwingConstants.CENTER
         );
 
-        title.setForeground(Color.WHITE);
-        title.setFont(
+        headingLabel.setForeground(Color.WHITE);
+        headingLabel.setFont(
                 new Font("Arial", Font.BOLD, 36)
         );
 
-        title.setBorder(
+        headingLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        20, 0, 10, 0
+                        15, 0, 10, 0
                 )
         );
 
-        background.add(title, BorderLayout.NORTH);
+        background.add(
+                headingLabel,
+                BorderLayout.NORTH
+        );
 
-        // Pokemon cards
+        // =========================
+        // POKEMON CARDS
+        // =========================
+
         JPanel pokemonPanel = new JPanel(
-                new GridLayout(2, 3, 20, 20)
+                new GridLayout(2, 3, 15, 15)
         );
 
         pokemonPanel.setOpaque(false);
 
         pokemonPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        20, 50, 20, 50
+                        10, 35, 10, 35
                 )
         );
 
         for (int i = 0; i < pokemon.length; i++) {
 
-            JButton button = createPokemonButton(
+            JPanel card = createPokemonCard(
                     pokemon[i],
                     types[i]
             );
 
-            String name = pokemon[i];
-
-            button.addActionListener(e -> {
-
-                if (selectedPokemon.contains(name)) {
-
-                    selectedPokemon.remove(name);
-
-                    button.setText(
-                            "<html><center>"
-                                    + name
-                                    + "<br><br>"
-                                    + getType(name)
-                                    + "</center></html>"
-                    );
-
-                    button.setBackground(
-                            new Color(45, 55, 85)
-                    );
-
-                } else if (selectedPokemon.size() < 3) {
-
-                    selectedPokemon.add(name);
-
-                    button.setText(
-                            "<html><center>"
-                                    + name
-                                    + "<br><br>"
-                                    + getType(name)
-                                    + "<br><br>"
-                                    + "✓ SELECTED"
-                                    + "</center></html>"
-                    );
-
-                    button.setBackground(
-                            new Color(65, 95, 130)
-                    );
-
-                } else {
-
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "You can select only 3 Pokemon!"
-                    );
-                }
-            });
-
-            pokemonPanel.add(button);
+            pokemonPanel.add(card);
         }
 
         background.add(
@@ -133,24 +96,24 @@ public class PokemonSelectionScreen extends JFrame {
                 BorderLayout.CENTER
         );
 
-        // Bottom panel
+        // =========================
+        // BOTTOM PANEL
+        // =========================
+
         JPanel bottomPanel = new JPanel(
                 new BorderLayout()
         );
 
         bottomPanel.setOpaque(false);
 
-        JLabel selectedLabel = new JLabel(
-                "Select exactly 3 Pokemon",
-                SwingConstants.CENTER
-        );
+        selectedLabel = new JLabel();
+        selectedLabel.setText("Selected: 0 / 3");
+        selectedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        selectedLabel.setForeground(
-                Color.LIGHT_GRAY
-        );
 
+        selectedLabel.setForeground(Color.LIGHT_GRAY);
         selectedLabel.setFont(
-                new Font("Arial", Font.PLAIN, 18)
+                new Font("Arial", Font.BOLD, 18)
         );
 
         JButton continueButton = new JButton(
@@ -197,7 +160,7 @@ public class PokemonSelectionScreen extends JFrame {
 
         bottomPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 30, 20, 30
+                        5, 30, 15, 30
                 )
         );
 
@@ -211,50 +174,178 @@ public class PokemonSelectionScreen extends JFrame {
         setVisible(true);
     }
 
-    private JButton createPokemonButton(
-            String name,
-            String type
+    // =========================
+    // CREATE POKEMON CARD
+    // =========================
+
+    private JPanel createPokemonCard(
+            String pokemonName,
+            String pokemonType
     ) {
 
-        JButton button = new JButton(
-                "<html><center>"
-                        + name
-                        + "<br><br>"
-                        + type
-                        + "</center></html>"
+        JPanel card = new JPanel(
+                new BorderLayout()
         );
 
-        button.setFont(
-                new Font("Arial", Font.BOLD, 20)
-        );
-
-        button.setForeground(Color.WHITE);
-
-        button.setBackground(
+        card.setBackground(
                 new Color(45, 55, 85)
         );
 
-        button.setFocusPainted(false);
-
-        button.setBorder(
+        card.setBorder(
                 BorderFactory.createLineBorder(
                         new Color(120, 130, 160),
                         2
                 )
         );
 
-        return button;
+        // =========================
+        // SPRITE
+        // =========================
+
+        JLabel spriteLabel = new JLabel();
+        spriteLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        ImageIcon icon = new ImageIcon(
+                "assets/pokemon/"
+                        + pokemonName
+                        + "_front.png"
+        );
+
+        Image image = icon.getImage()
+                .getScaledInstance(
+                        120,
+                        120,
+                        Image.SCALE_SMOOTH
+                );
+
+        spriteLabel.setIcon(
+                new ImageIcon(image)
+        );
+
+        card.add(
+                spriteLabel,
+                BorderLayout.CENTER
+        );
+
+        // =========================
+        // INFORMATION
+        // =========================
+
+        JLabel infoLabel = new JLabel(
+                "<html><center>"
+                        + "<b>"
+                        + pokemonName
+                        + "</b>"
+                        + "<br>"
+                        + pokemonType
+                        + "</center></html>"
+        );
+
+        infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        infoLabel.setForeground(Color.WHITE);
+
+        infoLabel.setFont(
+                new Font("Arial", Font.PLAIN, 16)
+        );
+
+        infoLabel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        5, 5, 5, 5
+                )
+        );
+
+        card.add(
+                infoLabel,
+                BorderLayout.SOUTH
+        );
+
+        // =========================
+        // CLICK SELECTION
+        // =========================
+
+        card.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e
+                    ) {
+
+                        if (selectedPokemon.contains(
+                                pokemonName
+                        )) {
+
+                            selectedPokemon.remove(
+                                    pokemonName
+                            );
+
+                            card.setBackground(
+                                    new Color(45, 55, 85)
+
+                            );
+
+                            infoLabel.setText(
+                                    "<html><center>"
+                                            + "<b>"
+                                            + pokemonName
+                                            + "</b>"
+                                            + "<br>"
+                                            + pokemonType
+                                            + "</center></html>"
+                            );
+
+                        } else if (
+                                selectedPokemon.size() < 3
+                        ) {
+
+                            selectedPokemon.add(
+                                    pokemonName
+                            );
+
+                            card.setBackground(
+                                    new Color(65, 95, 130)
+
+                            );
+
+                            infoLabel.setText(
+                                    "<html><center>"
+                                            + "<b>✓ "
+                                            + pokemonName
+                                            + "</b>"
+                                            + "<br>"
+                                            + pokemonType
+                                            + "<br>"
+                                            + "SELECTED"
+                                            + "</center></html>"
+                            );
+
+                        } else {
+
+                            JOptionPane.showMessageDialog(
+                                    PokemonSelectionScreen.this,
+                                    "You can select only 3 Pokemon!"
+                            );
+                        }
+
+                        updateSelectedLabel();
+                    }
+                }
+        );
+
+        return card;
     }
 
-    private String getType(String name) {
+    // =========================
+    // UPDATE COUNTER
+    // =========================
 
-        for (int i = 0; i < pokemon.length; i++) {
+    private void updateSelectedLabel() {
 
-            if (pokemon[i].equals(name)) {
-                return types[i];
-            }
-        }
-
-        return "";
+        selectedLabel.setText(
+                "Selected: "
+                        + selectedPokemon.size()
+                        + " / 3"
+        );
     }
 }
