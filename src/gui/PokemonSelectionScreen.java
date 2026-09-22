@@ -128,6 +128,8 @@ public class PokemonSelectionScreen extends JFrame {
 
         continueButton.addActionListener(e -> {
 
+            audio.SoundManager.playSound("click.wav");
+
             if (selectedPokemon.size() != 3) {
 
                 JOptionPane.showMessageDialog(
@@ -271,6 +273,8 @@ public class PokemonSelectionScreen extends JFrame {
                     public void mouseClicked(
                             java.awt.event.MouseEvent e
                     ) {
+
+                        audio.SoundManager.playSound("click.wav");
 
                         if (selectedPokemon.contains(
                                 pokemonName

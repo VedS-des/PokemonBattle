@@ -7,6 +7,9 @@ import model.Trainer;
 public class BattleEngine {
 
     private final BattleState state;
+    private Move lastEnemyMove;
+    private Move preparedEnemyMove;
+    private boolean playerAttacksFirst;
 
     public BattleEngine(Trainer player, Trainer enemy) {
         this.state = new BattleState(player, enemy);
@@ -27,13 +30,7 @@ public class BattleEngine {
             return;
         }
 
-        BattleTurn.executeTurn(
-                state.getPlayerPokemon(),
-                state.getEnemyPokemon(),
-                playerMove
-        );
-
-        updateActivePokemon();
+        prepareTurn(playerMove);
     }
 
     private void updateActivePokemon() {
@@ -62,5 +59,64 @@ public class BattleEngine {
     public boolean isBattleOver() {
         return state.getPlayer().isDefeated()
                 || state.getEnemy().isDefeated();
+    }
+    public Move getLastEnemyMove() {
+        return lastEnemyMove;
+    }
+    public void executeEnemyMove(Move enemyMove) {
+
+        if (enemyMove == null) {
+            return;
+        }
+
+        MoveExecutor.executeMove(
+                state.getEnemyPokemon(),
+                state.getPlayerPokemon(),
+                enemyMove
+        );
+
+        updateActivePokemon();
+    }
+    public void prepareTurn(Move playerMove) {
+
+        Pokemon playerPokemon = state.getPlayerPokemon();
+        Pokemon enemyPokemon = state.getEnemyPokemon();
+
+        playerAttacksFirst =
+                TurnManager.getFirstAttacker(
+                        playerPokemon,
+                        enemyPokemon
+                ) == playerPokemon;
+
+        preparedEnemyMove =
+                BattleTurn.chooseEnemyMove(enemyPokemon);
+    }
+
+    public boolean doesPlayerAttackFirst() {
+        return playerAttacksFirst;
+    }
+
+    public Move getPreparedEnemyMove() {
+        return preparedEnemyMove;
+    }
+
+    public void executeSingleMove(
+            Pokemon attacker,
+            Pokemon defender,
+            Move move) {
+
+        if (attacker == null
+                || defender == null
+                || move == null) {
+            return;
+        }
+
+        MoveExecutor.executeMove(
+                attacker,
+                defender,
+                move
+        );
+
+        updateActivePokemon();
     }
 }

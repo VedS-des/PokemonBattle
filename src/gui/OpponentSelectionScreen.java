@@ -50,6 +50,8 @@ public class OpponentSelectionScreen extends JFrame {
 
         // Red
         redButton.addActionListener(e -> {
+            audio.SoundManager.playSound("click.wav");
+
             GameState.opponentTrainer = "Red";
             dispose();
             new PokemonSelectionScreen();
@@ -57,6 +59,8 @@ public class OpponentSelectionScreen extends JFrame {
 
         // Steven
         stevenButton.addActionListener(e -> {
+            audio.SoundManager.playSound("click.wav");
+
             GameState.opponentTrainer = "Steven";
             dispose();
             new PokemonSelectionScreen();
@@ -64,6 +68,8 @@ public class OpponentSelectionScreen extends JFrame {
 
         // Cynthia
         cynthiaButton.addActionListener(e -> {
+            audio.SoundManager.playSound("click.wav");
+
             GameState.opponentTrainer = "Cynthia";
             dispose();
             new PokemonSelectionScreen();

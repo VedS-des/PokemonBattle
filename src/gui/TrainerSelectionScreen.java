@@ -50,6 +50,8 @@ public class TrainerSelectionScreen extends JFrame {
 
         boyButton.addActionListener(e -> {
 
+            audio.SoundManager.playSound("click.wav");
+
             GameState.playerTrainer = "Boy";
 
             dispose();
@@ -58,6 +60,8 @@ public class TrainerSelectionScreen extends JFrame {
         });
 
         girlButton.addActionListener(e -> {
+
+            audio.SoundManager.playSound("click.wav");
 
             GameState.playerTrainer = "Girl";
 

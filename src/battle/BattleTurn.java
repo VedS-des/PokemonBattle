@@ -33,7 +33,7 @@ public class BattleTurn {
         );
     }
 
-    public static void executeTurn(
+    public static Move executeTurn(
             Pokemon playerPokemon,
             Pokemon enemyPokemon,
             Move playerMove) {
@@ -61,7 +61,7 @@ public class BattleTurn {
             );
 
             if (enemyPokemon.isFainted()) {
-                return;
+                return enemyMove;
             }
 
             MoveExecutor.executeMove(
@@ -79,7 +79,7 @@ public class BattleTurn {
             );
 
             if (playerPokemon.isFainted()) {
-                return;
+                return enemyMove;
             }
 
             MoveExecutor.executeMove(
@@ -88,5 +88,10 @@ public class BattleTurn {
                     playerMove
             );
         }
+
+        return enemyMove;
+    }
+    public static Move chooseEnemyMove(Pokemon enemyPokemon) {
+        return AIPlayer.chooseMove(enemyPokemon);
     }
 }
